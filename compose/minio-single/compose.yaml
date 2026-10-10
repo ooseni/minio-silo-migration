@@ -1,0 +1,41 @@
+# MinIO single node on a bind-mounted local directory (DEV-917 / ST01).
+# Start and stop it with scripts/up.sh and scripts/down.sh, which pass
+# versions.env and this folder's .env to Compose.
+name: minio-single
+
+services:
+  minio:
+    image: ${MINIO_IMAGE:?MINIO_IMAGE comes from versions.env; use scripts/up.sh}
+    container_name: minio-single
+    hostname: minio-single
+    # Run as the host user so bind-mounted data stays owned by you (no sudo to reset).
+    user: "${LAB_UID:-1000}:${LAB_GID:-1000}"
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${MINIO_API_PORT:-9000}:9000"
+      - "127.0.0.1:${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - ${LAB_DATA_DIR:-../../lab-data}/minio-single/data:/data
+    healthcheck:
+      # Same probe Silo's classic image uses, so both products are checked alike.
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "${MINIO_CPUS:-1.0}"
+          memory: ${MINIO_MEMORY:-1g}
+    networks:
+      - lab
+
+networks:
+  lab:
+    name: ${LAB_NETWORK:-migration-net}
+    external: true
