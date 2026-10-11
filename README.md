@@ -16,7 +16,7 @@ Silo nodes and the swap needs a full stop.
 ## Links
 
 - Jira Epic: [DEV-916](https://glynac.atlassian.net/browse/DEV-916) (Jira sign-in required)
-- Project board: added when the board is created
+- Project board: [MinIO to Silo migration (DEV-916)](https://github.com/users/ooseni/projects/1), one issue per sub-task ([#1](https://github.com/ooseni/minio-silo-migration/issues/1) to [#15](https://github.com/ooseni/minio-silo-migration/issues/15))
 
 ## Status
 
@@ -24,7 +24,7 @@ Silo nodes and the swap needs a full stop.
 
 | Sub-task | Jira | Topic | Status | Write-up |
 |---|---|---|---|---|
-| ST01 | DEV-917 | Repo, version pins and local Compose lab | ⬜ in progress | [docs/01](docs/01-repo-versions-and-lab/README.md) |
+| ST01 | DEV-917 | Repo, version pins and local Compose lab | ⬜ built and tested, awaiting mentor review | [docs/01](docs/01-repo-versions-and-lab/README.md) |
 | ST02 | DEV-918 | Test data and verification toolkit | ⬜ | docs/02-test-data-and-verification |
 | ST03 | DEV-919 | Replication smoke test and rehearsal | ⬜ | docs/03-replication-rehearsal |
 | ST04 | DEV-920 | MinIO feature validation (single node) | ⬜ | docs/04-minio-feature-validation |
