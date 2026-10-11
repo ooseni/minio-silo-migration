@@ -1,0 +1,57 @@
+### Step 3: mc from a container on migration-net (2026-10-10T23:46:23Z)
+$ scripts/mc.sh minio-single --version
+mc version RELEASE.2025-08-13T08-35-41Z (commit-id=7394ce0dd2a80935aded936b09fa12cbb3cb8096)
+$ scripts/mc.sh minio-single admin info lab
+●  minio-single:9000
+   Uptime: 23 seconds 
+   Version: 2025-10-15T17-29-55Z
+   Network: 1/1 OK 
+   Drives: 1/1 OK 
+   Pool: 1
+
+┌──────┬───────────────────────┬─────────────────────┬──────────────┐
+│ Pool │ Drives Usage          │ Erasure stripe size │ Erasure sets │
+│ 1st  │ 1.8% (total: 956 GiB) │ 1                   │ 1            │
+└──────┴───────────────────────┴─────────────────────┴──────────────┘
+
+1 drive online, 0 drives offline, EC:0
+
+### Step 4: write a 5 MiB random object
+source sha256: 4f975ccd3859ecdce5521de3de1e681c2bd1a1c379f19c7495c887ca9e2f2f22
+Bucket created successfully `lab/st01-persistence`.
+ 0 B / ?  5.00 MiB / ?  39.67 MiB/s5242880 bytes -> `lab/st01-persistence/object.bin`
+Name      : object.bin
+Size      : 5.0 MiB 
+ETag      : 2b3167b7fb990e2d7705ed861a2ee695-1 
+PASS sha256 4f975ccd3859ecdce5521de3de1e681c2bd1a1c379f19c7495c887ca9e2f2f22 matches the uploaded object
+
+### Step 5: docker compose restart
+ Container minio-single Restarting 
+ Container minio-single Started 
+healthy after ~8s
+PASS sha256 4f975ccd3859ecdce5521de3de1e681c2bd1a1c379f19c7495c887ca9e2f2f22 matches the uploaded object
+
+### Step 6: down (no -v) then up
+ Container minio-single Stopping 
+ Container minio-single Stopped 
+ Container minio-single Removing 
+ Container minio-single Removed 
+minio-single stopped. Data kept in lab-data/minio-single
+$ docker ps -a --filter name=minio-single -q | wc -l
+0
+ Container minio-single Creating 
+ Container minio-single Created 
+ Container minio-single Starting 
+ Container minio-single Started 
+ Container minio-single Waiting 
+ Container minio-single Healthy 
+NAME           IMAGE                                               COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+minio-single   ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z   "/usr/bin/docker-ent…"   minio     6 seconds ago   Up 6 seconds (healthy)   127.0.0.1:9000-9001->9000-9001/tcp
+PASS sha256 4f975ccd3859ecdce5521de3de1e681c2bd1a1c379f19c7495c887ca9e2f2f22 matches the uploaded object
+
+### Volume layout on the host
+$ ls -ln lab-data/minio-single/data
+total 4
+drwxr-xr-x 3 1000 1000 4096 Oct 11 00:46 st01-persistence
+$ du -sh lab-data/minio-single
+5.2M	lab-data/minio-single

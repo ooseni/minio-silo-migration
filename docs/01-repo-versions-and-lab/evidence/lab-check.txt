@@ -1,0 +1,21 @@
+Lab check against Profile B (min 8 CPU, 16 GB RAM, 100 GB free SSD)
+Date: 2026-10-10T23:49:23Z
+INFO   OS                     Ubuntu 26.04.1 LTS, kernel 6.18.40.1-microsoft-standard-WSL2
+INFO   Host                   WSL2 VM: CPU, RAM and disk below are what WSL is allowed to use
+WARN   CPU                    4 logical CPUs, profile wants 8 cores (Intel(R) Core(TM) i7-3520M CPU @ 2.90GHz)
+WARN   RAM                    6.8 GB (+4.0 GB swap), profile wants 16 GB
+WARN   Free disk              29 GB usable, profile wants 100 GB (on /dev/sdd (ext4); virtual disk lives on Windows C:, which has 29 GB free)
+PASS   Filesystem             ext4 (Linux filesystem, not a /mnt/c Windows mount)
+PASS   Docker Engine          29.8.2 (Ubuntu 26.04.1 LTS)
+PASS   cgroup                 v2 (Compose CPU and memory limits apply)
+INFO   Docker root            /var/lib/docker (overlayfs)
+PASS   Compose                v5.6.0 (Compose v2+ plugin)
+PASS   Network                migration-net exists
+INFO   Port 9000              in use by minio-single
+INFO   Port 9001              in use by minio-single
+PASS   git                    /usr/bin/git
+PASS   gitleaks               ~/.local/bin/gitleaks
+PASS   openssl                /usr/bin/openssl
+
+Result: 0 failure(s), 3 warning(s)
+lab-check exit=0

@@ -1,0 +1,70 @@
+### TLS step 1: generate the lab CA and the minio-single certificate (2026-10-10T23:47:03Z)
+Created lab CA: certs/ca/ca.crt
+certs/minio-single/public.crt: OK
+subject=CN=minio-single
+X509v3 Subject Alternative Name: 
+    DNS:minio-single, DNS:localhost, IP Address:127.0.0.1
+notAfter=Oct 10 23:47:03 2027 GMT
+$ ls -l certs/ca certs/minio-single (key files only listed, never printed)
+certs/ca: certs/ca:
+total 12
+-rw------- ca.crt
+-rw------- ca.key
+-rw------- ca.srl
+ 
+certs/minio-single: certs/minio-single:
+total 12
+drwxr-xr-x CAs
+-rw------- private.key
+-rw-r--r-- public.crt
+ 
+certs/minio-single/CAs: certs/minio-single/CAs:
+total 4
+-rw-r--r-- ca.crt
+$ git check-ignore certs/ca/ca.key certs/minio-single/private.key
+certs/ca/ca.key
+certs/minio-single/private.key
+
+### TLS step 2: restart with the TLS overlay
+ Container minio-single Stopping 
+ Container minio-single Stopped 
+ Container minio-single Removing 
+ Container minio-single Removed 
+minio-single stopped. Data kept in lab-data/minio-single
+ Container minio-single Creating 
+ Container minio-single Created 
+ Container minio-single Starting 
+ Container minio-single Started 
+ Container minio-single Waiting 
+ Container minio-single Healthy 
+minio-single healthy after 7s
+NAME           IMAGE                                               COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+minio-single   ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z   "/usr/bin/docker-ent…"   minio     6 seconds ago   Up 6 seconds (healthy)   127.0.0.1:9000-9001->9000-9001/tcp
+
+### TLS step 3: HTTPS from the host, verified against the lab CA
+https /minio/health/live -> HTTP 200
+https /minio/health/ready -> HTTP 200
+https without the CA (expect certificate error, curl exit 60) -> curl exit 60
+plain http while TLS is on (expect 400, not served) -> HTTP 400
+$ openssl s_client: negotiated protocol and verification
+subject=CN=minio-single
+Protocol: TLSv1.3
+Verify return code: 0 (ok)
+    Protocol  : TLSv1.3
+    Verify return code: 0 (ok)
+
+### TLS step 4: mc over HTTPS from a container
+$ TLS=1 scripts/mc.sh minio-single admin info lab
+●  minio-single:9000
+   Uptime: 6 seconds 
+   Version: 2025-10-15T17-29-55Z
+   Network: 1/1 OK 
+   Drives: 1/1 OK 
+   Pool: 1
+$ TLS=1 scripts/mc.sh minio-single ls lab/st01-persistence
+[2026-10-10 23:46:27 UTC] 5.0MiB STANDARD object.bin
+$ mc over HTTPS without the CA (expect failure)
+mc: <ERROR> Unable to list folder. Client sent an HTTP request to an HTTPS server.
+mc: <ERROR> Unable to list folder. Get "https://minio-single:9000/": tls: failed to verify certificate: x509: certificate signed by unknown authority
+$ docker inspect health (healthcheck runs mc ready over HTTPS)
+healthy

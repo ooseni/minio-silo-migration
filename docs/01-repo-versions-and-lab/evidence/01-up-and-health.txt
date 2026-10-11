@@ -1,0 +1,31 @@
+### Clean-state check 2026-10-10T23:46:00Z
+$ docker ps -a --filter network=migration-net
+(none above = no lab containers)
+$ docker network ls --filter name=migration-net -q | wc -l
+0
+$ docker volume ls -q | wc -l
+0
+$ ls lab-data
+ls: cannot access 'lab-data': No such file or directory
+
+### Step 1: scripts/up.sh minio-single
+Created network migration-net
+ Container minio-single Creating 
+ Container minio-single Created 
+ Container minio-single Starting 
+ Container minio-single Started 
+ Container minio-single Waiting 
+ Container minio-single Healthy 
+minio-single healthy after 7s
+NAME           IMAGE                                               COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+minio-single   ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z   "/usr/bin/docker-ent…"   minio     6 seconds ago   Up 6 seconds (healthy)   127.0.0.1:9000-9001->9000-9001/tcp
+
+### Step 2: health endpoints from the host
+/minio/health/live -> HTTP 200
+/minio/health/ready -> HTTP 200
+console 127.0.0.1:9001 -> HTTP 200
+$ docker port minio-single
+9000/tcp -> 127.0.0.1:9000
+9001/tcp -> 127.0.0.1:9001
+$ docker inspect health
+healthy (image ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z, user 1000:1000, restart unless-stopped)

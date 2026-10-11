@@ -1,0 +1,9 @@
+### Basic monitoring: scripts/stats.sh (minio-single idle, TLS on)
+=== 2026-10-10T23:47:34Z ===
+load average: 1.19 1.87 0.98 | mem used 985Mi of 6.8Gi
+NAME           CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O     PIDS
+minio-single   0.00%     72.36MiB / 1GiB     7.07%     23.2kB / 29.5kB   0B / 16.4kB   10
+=== 2026-10-10T23:47:41Z ===
+load average: 1.10 1.84 0.98 | mem used 994Mi of 6.8Gi
+NAME           CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O     PIDS
+minio-single   0.06%     72.37MiB / 1GiB     7.07%     23.2kB / 29.5kB   0B / 20.5kB   10
