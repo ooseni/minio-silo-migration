@@ -51,8 +51,11 @@ if [[ $wsl == 1 && -d /mnt/c ]]; then
 fi
 if (( disk_gb >= min_disk_gb )); then pass "Free disk" "${disk_gb} GB $disk_note"
 else warn "Free disk" "${disk_gb} GB usable, profile wants $min_disk_gb GB ($disk_note)"; fi
-[[ "$data_fs" == "ext4" || "$data_fs" == "xfs" ]] && pass "Filesystem" "$data_fs (Linux filesystem, not a /mnt/c Windows mount)" \
-  || warn "Filesystem" "$data_fs: keep lab data on a Linux filesystem, not /mnt/c"
+case "$data_fs" in
+  ext4|xfs|btrfs) pass "Filesystem" "$data_fs (disk-backed Linux filesystem, not a /mnt/c Windows mount)" ;;
+  tmpfs) warn "Filesystem" "tmpfs: lab data would live in RAM and vanish on restart; clone under ~/ instead" ;;
+  *) warn "Filesystem" "$data_fs: keep lab data on a disk-backed Linux filesystem such as ext4, not /mnt/c" ;;
+esac
 
 # --- Docker ----------------------------------------------------------------
 if docker info >/dev/null 2>&1; then
