@@ -151,7 +151,7 @@ Expected results were written before each step was run.
 | Acceptance criterion | Status |
 |---|---|
 | Public repo opens without login, has the evaluation note, mentor confirms no internal information | Published and opens without login (step 15); mentor confirmation pending |
-| Project board with one issue per sub-task, linked both ways; commit workflow agreed | [Board](https://github.com/users/ooseni/projects/1) with issues #1 to #15, each linking to its Jira sub-task; Jira-to-GitHub links and mentor agreement on the workflow pending |
+| Project board with one issue per sub-task, linked both ways; commit workflow agreed | Linked both ways: the [board](https://github.com/users/ooseni/projects/1) has issues #1 to #15, each linking to its Jira sub-task, and each Jira sub-task DEV-917 to DEV-931 has a web link back to its issue (added by the intern on 2026-10-11; the Epic links to the board). Mentor agreement on the commit workflow pending |
 | Secret scanning and pre-commit hook active; fake-secret commit blocked (screenshot) | Done: the hook blocks the fake secret (step 13, [screenshot](screenshots/fake-secret-blocked.png) with the shell prompt redacted) and GitHub secret scanning and push protection are enabled (step 15) |
 | Versions with digests or checksums; MinIO artifact where we control it; Silo pinned with variant decision; O01 to O08 listed | Done (D1, D2, the table above; image public on GHCR) |
 | Machine specs, profile, Docker and Compose versions, volume layout documented | Done (Environment, D5, the layout below) |
@@ -226,8 +226,8 @@ every functional check: healthy from a clean machine, data kept across restart
 and down/up, HTTPS with mc, and a rebuild from a fresh clone in under 30
 seconds. The repository, board, issues and secret scanning are live. Still open:
 the mentor's confirmation that the repository has no internal information, the
-mentor's review of the test matrix and agreement on the commit workflow, the
-Jira-to-GitHub links on each sub-task, and the answer on running below Profile B.
+mentor's review of the test matrix and agreement on the commit workflow, and
+the answer on running below Profile B.
 
 ## Reproduce and clean up
 
