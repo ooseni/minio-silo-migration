@@ -1,0 +1,12 @@
+# TLS overlay for minio-single. Generate certificates first with
+# scripts/tls-gen.sh minio-single, then start with: TLS=1 scripts/up.sh minio-single
+services:
+  minio:
+    command: ["server", "/data", "--console-address", ":9001", "--certs-dir", "/certs"]
+    environment:
+      # mc's built-in "local" alias is plain HTTP; point it at HTTPS for the healthcheck.
+      MC_HOST_local: https://localhost:9000
+    volumes:
+      - ${LAB_CERTS_DIR:-../../certs}/minio-single:/certs:ro
+    healthcheck:
+      test: ["CMD-SHELL", "SSL_CERT_FILE=/certs/CAs/ca.crt mc ready local"]
