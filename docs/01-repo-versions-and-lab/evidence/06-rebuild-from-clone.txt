@@ -1,0 +1,59 @@
+### Destroy the lab (2026-10-11T00:13:31Z)
+ Container minio-single Stopping 
+ Container minio-single Stopped 
+ Container minio-single Removing 
+ Container minio-single Removed 
+minio-single reset: containers, volumes and lab-data/minio-single removed
+migration-net
+removed local image ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z
+lab containers: 0, networks: 0, local MinIO image: 0
+
+### Rebuild from the public repository alone
+cloned at 8497930 ST01: docs: add DEV-917 write-up with evidence
+Result: 0 failure(s), 4 warning(s)
+ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z
+pulled digest: ghcr.io/ooseni/minio@sha256:0a683d8646a28e03f3d7825c66b2eb53786b6c1c4f74c02610b1f6bca336d8b9
+.env created from .env.example (values not shown)
+Created network migration-net
+ Container minio-single Creating 
+ Container minio-single Created 
+ Container minio-single Starting 
+ Container minio-single Started 
+ Container minio-single Waiting 
+ Container minio-single Healthy 
+minio-single healthy after 7s
+/minio/health/live -> HTTP 200
+/minio/health/ready -> HTTP 200
+●  minio-single:9000
+   Uptime: 6 seconds 
+   Version: 2025-10-15T17-29-55Z
+   Network: 1/1 OK 
+   Drives: 1/1 OK 
+   Pool: 1
+
+### TLS on the rebuilt lab
+Created lab CA: certs/ca/ca.crt
+ Container minio-single Stopping 
+ Container minio-single Stopped 
+ Container minio-single Removing 
+ Container minio-single Removed 
+minio-single stopped. Data kept in lab-data/minio-single
+ Container minio-single Creating 
+ Container minio-single Created 
+ Container minio-single Starting 
+ Container minio-single Started 
+ Container minio-single Waiting 
+ Container minio-single Healthy 
+minio-single healthy after 7s
+https /minio/health/ready -> HTTP 200
+●  minio-single:9000
+   Uptime: 6 seconds 
+   Version: 2025-10-15T17-29-55Z
+
+### Timings
+clone: 2 s | image pull: 8 s | .env + up to healthy + checks: 9 s | TLS: 9 s
+rebuild from repo to healthy HTTP lab: 19 s; including TLS: 28 s
+
+### Secrets stay out of git in the clone
+$ git status --short (must not list .env or certs)
+(empty = nothing to commit)

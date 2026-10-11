@@ -1,0 +1,30 @@
+### GitHub settings (2026-10-11T00:14:46Z)
+$ gh repo view ooseni/minio-silo-migration
+{"description":"Zero-downtime migration from the last open-source MinIO to Silo by bucket replication, evaluated in a Docker Compose lab with failure injection, parity checks and warp benchmarks.","homepageUrl":"https://github.com/ooseni/minio-silo-migration","license":"mit","topics":["bash","data-migration","devops","docker-compose","minio","object-storage","replication","s3"],"visibility":"PUBLIC"}
+$ anonymous HTTP check of the repo page (no login)
+https://github.com/ooseni/minio-silo-migration -> HTTP 200
+$ secret scanning and push protection
+{"push_protection":"enabled","secret_scanning":"enabled"}
+$ GHCR package
+{"linked_repository":"ooseni/minio-silo-migration","url":"https://github.com/users/ooseni/packages/container/package/minio","visibility":"public"}
+anonymous pull of ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z -> sha256:0a683d8646a28e03f3d7825c66b2eb53786b6c1c4f74c02610b1f6bca336d8b9
+$ Project board
+{"items":15,"public":true,"title":"MinIO to Silo migration (DEV-916)","url":"https://github.com/users/ooseni/projects/1"}
+{"status_columns":["Backlog","In Progress","Documenting","Done"]}
+anonymous HTTP check of the board -> HTTP 200
+$ Issues (one per sub-task)
+#1 ST01 (DEV-917): Set up the repo, pin versions and build the local Docker Compose lab
+#2 ST02 (DEV-918): Seed test data and build the verification toolkit
+#3 ST03 (DEV-919): Front-loaded replication smoke test and rehearsal (MinIO to MinIO, then MinIO to Silo)
+#4 ST04 (DEV-920): MinIO feature validation (single node), including versioning, object lock and lifecycle
+#5 ST05 (DEV-921): MinIO distributed mode: resilience, healing and expansion
+#6 ST06 (DEV-922): MinIO performance baseline: local versus NFS-backed storage
+#7 ST07 (DEV-923): Design the migration and build the migration lab
+#8 ST08 (DEV-924): Perform the migration, part 1: transfer configuration, set up replication and backfill
+#9 ST09 (DEV-925): Perform the migration, part 2: live traffic, failure injection and parity verification
+#10 ST10 (DEV-926): Perform the migration, part 3: zero-downtime cutover, rollback and decommission
+#11 ST11 (DEV-927): In-place swap baseline and mixed-binary behavior
+#12 ST12 (DEV-928): Silo functional validation and S3/client compatibility diff
+#13 ST13 (DEV-929): Benchmark Silo and compare with the MinIO baseline
+#14 ST14 (DEV-930): Security, licensing, maintenance and CVE review
+#15 ST15 (DEV-931): Capability matrix, final report, runbook and recommendation

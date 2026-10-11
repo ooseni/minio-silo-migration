@@ -1,6 +1,6 @@
 # 01. Repo, version pins and local Compose lab
 
-> Jira: DEV-917 | Sub-task ST01 | Status: in progress (publishing steps pending) | Date: 2026-10-11
+> Jira: DEV-917 | Sub-task ST01 | Status: built, tested and published; awaiting mentor review | Date: 2026-10-11
 
 ## Goal
 
@@ -14,7 +14,7 @@ machine, the profile and the test matrix that the later sub-tasks follow.
 
 | Item | Value |
 |---|---|
-| MinIO image | `ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z`, built from source, minio binary SHA-256 `7619daa8b997b3aaf042d04bc49e125d4735143425e110a479bd0b99c6155db4` |
+| MinIO image | `ghcr.io/ooseni/minio:RELEASE.2025-10-15T17-29-55Z`, registry digest `sha256:0a683d8646a28e03f3d7825c66b2eb53786b6c1c4f74c02610b1f6bca336d8b9`, built from source, minio binary SHA-256 `7619daa8b997b3aaf042d04bc49e125d4735143425e110a479bd0b99c6155db4` |
 | mc (in the MinIO image) | `RELEASE.2025-08-13T08-35-41Z`, SHA-256 `01f866e9c5f9b87c2b09116fa5d7c06695b106242d829a8bb32990c00312e891` (matches the official release file) |
 | Silo image | `docker.io/pgsty/silo:RELEASE.2026-09-16T00-00-00Z@sha256:635197cb9f36d01bee221d34d1c7d7960f6a95c48b0b6c01d99cd13bdae51a46` |
 | mcli image | `docker.io/pgsty/mc:RELEASE.2026-09-16T00-00-00Z@sha256:cfc83108c3abb371f8fb84d99c1fdc88f8c237e022409b0081fb7c0a3be634dd` |
@@ -49,7 +49,7 @@ open-source release, and it exists only as source. We build it with
 - the version is stamped with upstream's own `buildscripts/gen-ldflags.go`, so `minio --version` reports `RELEASE.2025-10-15T17-29-55Z (commit-id=9e49d5e7...)`;
 - the toolchain (`golang:1.24.8-alpine`, the version in the tag's `go.mod`) and the runtime base (`ubi9/ubi-micro`, as upstream used) are pinned by digest;
 - `mc` is the official `RELEASE.2025-08-13T08-35-41Z` binary, verified against MinIO's minisign key and SHA-256 during the build;
-- the image is published to `ghcr.io/ooseni/minio`, a registry we control, and the Dockerfile in this repo can rebuild it at any time.
+- the image is published as a public package at `ghcr.io/ooseni/minio`, linked to this repository, in a registry we control, and the Dockerfile in this repo can rebuild it at any time.
 
 Fallback, not used: the signed `RELEASE.2025-09-07T16-13-09Z` binary. It would
 put a known privilege-escalation bug in the baseline.
@@ -142,19 +142,21 @@ Expected results were written before each step was run.
 | 10 | `curl --cacert` HTTPS health; without CA; plain HTTP | 200 with the CA; certificate error without; HTTP refused | 200; curl exit 60; HTTP 400; TLS 1.3, verify code 0 | PASS | `evidence/03-tls.txt` |
 | 11 | `TLS=1 scripts/mc.sh minio-single admin info lab` and `ls` | mc works over HTTPS with the lab CA and fails without it | Works; "certificate signed by unknown authority" without the CA; the 5 MiB object is still listed | PASS | `evidence/03-tls.txt` |
 | 12 | `scripts/stats.sh` | CPU and memory per lab container recorded | `minio-single` idle at 72 MiB of 1 GiB | PASS | `evidence/04-docker-stats.txt` |
-| 13 | Stage a file with a fake, randomly generated GitHub token and `git commit` | Commit blocked by the gitleaks pre-commit hook, value redacted, HEAD unchanged | Blocked (`github-pat` rule, exit 1), value shown as REDACTED, HEAD unchanged | PASS | `evidence/05-fake-secret-blocked.txt` |
+| 13 | Stage a file with a fake, randomly generated GitHub token and `git commit` | Commit blocked by the gitleaks pre-commit hook, value redacted, HEAD unchanged | Blocked (`github-pat` rule, exit 1), value shown as REDACTED, HEAD unchanged | PASS | `evidence/05-fake-secret-blocked.txt`, `screenshots/fake-secret-blocked.png` |
+| 14 | Destroy the lab (reset, network and local image removed), clone the public repo, pull the image, create `.env`, `scripts/up.sh`, then TLS | Healthy from a fresh clone; same image digest; nothing secret in `git status` | Healthy over HTTP after 19 s, over HTTPS after 28 s; digest `sha256:0a683d86...` matches; `git status` clean | PASS | `evidence/06-rebuild-from-clone.txt` |
+| 15 | Check GitHub settings without and with the API | Repo and board open without login; MIT recognised; secret scanning and push protection on; package public and linked; 15 issues | All as expected (HTTP 200 for repo and board) | PASS | `evidence/07-github-settings.txt` |
 
 ## Results
 
 | Acceptance criterion | Status |
 |---|---|
-| Public repo opens without login, has the evaluation note, mentor confirms no internal information | Pending: publish, then mentor review |
-| Project board with one issue per sub-task, linked both ways; commit workflow agreed | Pending: board creation and mentor agreement |
-| Secret scanning and pre-commit hook active; fake-secret commit blocked (screenshot) | Pre-commit hook active and the fake-secret commit blocked (step 13); screenshot and GitHub secret scanning pending |
-| Versions with digests or checksums; MinIO artifact where we control it; Silo pinned with variant decision; O01 to O08 listed | Done (D1, D2, the table above); GHCR push pending |
+| Public repo opens without login, has the evaluation note, mentor confirms no internal information | Published and opens without login (step 15); mentor confirmation pending |
+| Project board with one issue per sub-task, linked both ways; commit workflow agreed | [Board](https://github.com/users/ooseni/projects/1) with issues #1 to #15, each linking to its Jira sub-task; Jira-to-GitHub links and mentor agreement on the workflow pending |
+| Secret scanning and pre-commit hook active; fake-secret commit blocked (screenshot) | Done: the hook blocks the fake secret (step 13, [screenshot](screenshots/fake-secret-blocked.png) with the shell prompt redacted) and GitHub secret scanning and push protection are enabled (step 15) |
+| Versions with digests or checksums; MinIO artifact where we control it; Silo pinned with variant decision; O01 to O08 listed | Done (D1, D2, the table above; image public on GHCR) |
 | Machine specs, profile, Docker and Compose versions, volume layout documented | Done (Environment, D5, the layout below) |
 | Clean machine to healthy; data survives restart and down/up | Done (steps 3 to 8) |
-| Destroy and rebuild from the repo alone, timed; `.env` not committed; `.env.example` placeholders only; TLS with mc over HTTPS | TLS done (steps 9 to 11); `.env` git-ignored; timed rebuild from a fresh clone pending |
+| Destroy and rebuild from the repo alone, timed; `.env` not committed; `.env.example` placeholders only; TLS with mc over HTTPS | Done: 19 s to a healthy lab from a fresh clone, 28 s with TLS (step 14); `.env` git-ignored, `.env.example` has CHANGE_ME placeholders only |
 | Test matrix committed and reviewed by the mentor | Committed as [`docs/test-matrix.md`](../test-matrix.md); review pending |
 
 Volume and directory layout on the host (all git-ignored):
@@ -166,6 +168,11 @@ certs/
   ca/ca.crt, ca.key         lab CA (key mode 600)
   minio-single/             public.crt, private.key, CAs/ca.crt mounted at /certs
 ```
+
+Rebuild timing note: the 8 s image pull in step 14 may be optimistic, because
+Docker's local content store can keep layers after `docker image rm`. The clone
+was also placed on a RAM-backed `tmpfs`, which `lab-check` correctly flagged;
+real lab data belongs on a disk-backed filesystem.
 
 ## Findings
 
@@ -212,12 +219,15 @@ stand in for it until the mentor says otherwise.
 
 ## Conclusion
 
-The local part of ST01 is complete. The MinIO baseline is pinned to the true
-last open-source release, built reproducibly from source because no official
-artifact remains, and the single-node lab passes every functional acceptance
-check: healthy from a clean machine, data kept across restart and down/up,
-HTTPS with mc. Publishing (repository, board, secret scanning, GHCR image),
-the timed rebuild from a fresh clone and the mentor reviews are still open.
+ST01's build and test work is complete. The MinIO baseline is pinned to the
+true last open-source release, built from source because no official artifact
+remains, and published in a registry we control. The single-node lab passes
+every functional check: healthy from a clean machine, data kept across restart
+and down/up, HTTPS with mc, and a rebuild from a fresh clone in under 30
+seconds. The repository, board, issues and secret scanning are live. Still open:
+the mentor's confirmation that the repository has no internal information, the
+mentor's review of the test matrix and agreement on the commit workflow, the
+Jira-to-GitHub links on each sub-task, and the answer on running below Profile B.
 
 ## Reproduce and clean up
 
