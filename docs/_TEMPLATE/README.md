@@ -1,6 +1,8 @@
 # NN. Sub-task title
 
-> Jira: DEV-NNN | Sub-task STNN | Status: in progress / done | Date: YYYY-MM-DD
+<img alt="Springer Capital Internship Project" src="https://img.shields.io/badge/Springer%20Capital-Internship%20Project-1F6FEB">
+
+> Springer Capital Internship Project | Jira: DEV-NNN | Sub-task STNN | Status: in progress / done | Date: YYYY-MM-DD
 
 Copy this folder to `docs/NN-short-name/` for each sub-task. Keep raw text
 evidence in `evidence/` and images in `screenshots/`. Every PASS or FAIL below

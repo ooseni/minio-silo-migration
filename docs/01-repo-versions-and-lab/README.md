@@ -1,6 +1,8 @@
 # 01. Repo, version pins and local Compose lab
 
-> Jira: DEV-917 | Sub-task ST01 | Status: built, tested and published; awaiting mentor review | Date: 2026-10-11
+<img alt="Springer Capital Internship Project" src="https://img.shields.io/badge/Springer%20Capital-Internship%20Project-1F6FEB">
+
+> Springer Capital Internship Project | Jira: DEV-917 | Sub-task ST01 | Status: built, tested and published; awaiting mentor review | Date: 2026-10-11
 
 ## Goal
 

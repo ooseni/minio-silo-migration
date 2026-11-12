@@ -1,11 +1,16 @@
 # MinIO to Silo migration lab
 
-> **Evaluation project.** This repository is a proof of concept for an internship
-> assignment. It evaluates whether a deployment of the last open-source MinIO
-> release can move to [Silo](https://silo.pgsty.com/), a community-maintained
-> MinIO fork, with zero downtime and no loss of data, versions, tags or
-> metadata. Everything runs locally in Docker Compose with synthetic data. It is
-> not a production deployment and contains no company data.
+<img alt="Springer Capital Internship Project" src="https://img.shields.io/badge/Springer%20Capital-Internship%20Project-1F6FEB">
+
+**Type:** Springer Capital Internship Project, Docker Compose evaluation lab | **Status:** sub-task 1 of 15 built and tested, awaiting mentor review
+
+> **Evaluation project.** This repository is a proof of concept for a Springer
+> Capital internship assignment. It evaluates whether a deployment of the last
+> open-source MinIO release can move to [Silo](https://silo.pgsty.com/), a
+> community-maintained MinIO fork, with zero downtime and no loss of data,
+> versions, tags or metadata. Everything runs locally in Docker Compose with
+> synthetic data. It is not a production deployment and contains no company
+> data.
 
 The approach is a side-by-side migration by replication: run a Silo cluster
 next to MinIO, replicate MinIO to Silo, move clients over through a proxy, and
